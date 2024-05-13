@@ -3,23 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechUp Prototype!</title>
+    <meta name="description" content="Know when to seek A&E for medical emergencies. Find your nearest GP for non-emergency medical care. Check A&E waiting times for public hospitals across Singapore.">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>A&E Guide | Information on Medical Emergency and Non-Emergency</title>
+    <link rel="icon" type="image/png" href="cross.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 
+<!--Info on when to seek A&E-->
+
 <div class="header">
-<body>
-    <h1>Header 1</h1>
-    <a href="https://nea.gov.sg">Link to NEA's website</a>
-    <a href="https://nea.gov.sg">Link to NEA's website</a>
-    <a href="https://nea.gov.sg">Link to NEA's website</a>  
-<body>
-<div>
+    <h1>[Under development] A&E Guide</h1>
+    <p>(1) Know when to seek A&E for medical emergencies.<br>(2) Find your nearest GP for non-emergency medical care.<br>(3) Check A&E waiting times for public hospitals across Singapore.</p>
+    <nav>
+        <a class="menu-link" href="https://moh.gov.sg">Home</a>
+        <a class="menu-link" href="https://moh.gov.sg">References</a>
+        <a class="menu-link" href="https://moh.gov.sg">Helpful Links</a>
+    </nav>
+</div>
 
 <div class="content">
-    <h2>Header 2</h2>
-    <p>Header 2, para</p>
+    <h2>Go Accident and Emergency (A&E) for medical emergencies</h2>
+    <div class="list-container">
+        <ul>
+            <li>Breathing difficulties (e.g. shortness of breath / choking)</li>
+            <li>Sudden and severe pain, including chest pain</li>
+            <li>Unconsciousness</li>
+            <li>Severe bleeding</li>
+            <li>Sudden dizziness, weakness, numbness or vision change</li>
+        </ul>
+        <ul>
+            <li>Change in mental state (e.g. sudden confusion / disorientation / difficulty arousing)</li>
+            <li>Coughing up or vomiting blood</li>
+            <li>Persistent vomiting or diarrhoea</li>
+            <li>Injuries to the head or spine</li>
+            <li>Major limb fractures / dislocations</li>
+            <li>Drug overdose or poisoning</li>
+            <li>Traffic or worksite accident</li>
+        </ul>
+    </div>
 </div>
-    
+
+<!--Info on GPFirst and button to go to GPFirst website-->
+
+<div class="content">
+    <h2>Go GPFirst for non-emergency cases</h2>
+    <p>The GPFirst programme encourages individuals with <u>mild to moderate medical conditions to consult General Practitioners (GP) before heading to A&E</u>. This ensures timely medical treatment for their conditions and allows A&E to prioritize more critical cases.</p>
+    <div class="button-container">
+        <button onclick="window.open('https://www.singhealth.com.sg/rhs/find-a-gp')">Go to GPFirst</button>
+    </div>
+</div>
+
+<div class="content">
+    <h2>Search A&E waiting time</h2>
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Enter your location" oninput="performSearch()">
+        <button onclick="performSearch()" class="search-button">Search</button>
+        <div id="search-results" class="autocomplete-results"></div>
+    </div>
+</div>
+
+<!--Search location and autocomplete-->
+
+<script>
+// Function to perform the address search
+function addressSearch(searchVal, returnGeom, getAddrDetails, pageNum) {
+  // Create a new XMLHttpRequest object
+  const xhr = new XMLHttpRequest();
+
+  // Set up the request
+  xhr.open("GET", `https://www.onemap.gov.sg/api/common/elastic/search?searchVal=${encodeURIComponent(searchVal)}&returnGeom=${returnGeom}&getAddrDetails=${getAddrDetails}&pageNum=${pageNum}`);
+
+  // Set the response type to JSON
+  xhr.responseType = 'json';
+
+  // Define what happens on successful data submission
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Handle success - the response is available in xhr.response
+      updateDropdown(xhr.response.results);
+    } else {
+      // Handle error
+      console.error('Search failed:', xhr.statusText);
+    }
+  };
+
+  // Define what happens in case of an error
+  xhr.onerror = function() {
+    console.error('Request failed');
+  };
+
+  // Send the request
+  xhr.send();
+}
+
+// Function to update the dropdown list with search results
+function updateDropdown(results) {
+  var searchResults = document.getElementById('search-results');
+  searchResults.innerHTML = ''; // Clear previous results
+
+  // Populate dropdown with new results
+  results.forEach(function(item) {
+    var div = document.createElement('div');
+    div.textContent = item.ADDRESS;
+    div.className = 'result-item';
+    div.onclick = function() {
+      document.getElementById('search-input').value = item.ADDRESS;
+      searchResults.style.display = 'none'; // Hide the results after selection
+    };
+    searchResults.appendChild(div);
+  });
+}
+
+// Function to handle the search button click and input oninput event
+function performSearch() {
+  var searchInput = document.getElementById('search-input').value;
+  addressSearch(searchInput, 'Y', 'Y', 1);
+  document.getElementById('search-results').style.display = 'block'; // Show the results
+}
+
+// Add event listener for input on search input
+document.getElementById('search-input').addEventListener('input', performSearch);
+
+</script>
+
 </body>
+
+<footer class="footer">
+  <a href="#">Back to top</a>
+</footer>
+
 </html>
